@@ -95,7 +95,7 @@ class BEV_corr(nn.Module):
 
         self.op_flow = RAFT(args)
         #{k.replace('module.',''):v for k,v in torch.load('op_flow/raft-kitti.pth').items()}
-        # self.op_flow.load_state_dict({k.replace('module.',''):v for k,v in torch.load('op_flow/raft-kitti.pth').items()}, strict=False)
+        self.op_flow.load_state_dict({k.replace('module.',''):v for k,v in torch.load('op_flow/raft-kitti.pth').items()}, strict=False)
 
         torch.autograd.set_detect_anomaly(True)
         # Running the forward pass with detection enabled will allow the backward pass to print the traceback of the forward operation that created the failing backward function.
