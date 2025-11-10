@@ -28,11 +28,9 @@ def sequence_loss(epoch, flow_preds, flow_conf, flow_gt, mask, gamma=0.8, max_fl
         dis_loss_conf = dis_loss.sum(axis = 0)
         con_dis_loss = (dis_loss_conf - dis_loss_conf.mean())/dis_loss_conf.std()
         # conf_loss = lev_conf*(1/(1+torch.exp(-0.05 * con_dis_loss))) + (1 - lev_conf)*(1/(1+torch.exp(0.05 * con_dis_loss)))
-        if epoch>15:
-            conf_loss = lev_conf*(1/(1+torch.exp(-0.5 * con_dis_loss))) + (1 - lev_conf)*(1/(1+torch.exp(0.5 * con_dis_loss)))
-        else:
-            conf_loss = lev_conf*(1/(1+torch.exp(-0.05 * con_dis_loss))) + (1 - lev_conf)*(1/(1+torch.exp(0.05 * con_dis_loss)))
-        flow_loss += i_weight  * (dis_loss + 100*conf_loss).mean()
+        
+        conf_loss = lev_conf*(1/(1+torch.exp(-0.05 * con_dis_loss))) + (1 - lev_conf)*(1/(1+torch.exp(0.05 * con_dis_loss)))
+        flow_loss = flow_loss + i_weight  * (dis_loss + 100*conf_loss).mean()
 
     epe = torch.sum((lev_preds - flow_gt)**2, dim=0).sqrt()
     if mask != None:
