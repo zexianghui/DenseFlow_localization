@@ -4,7 +4,7 @@ import os
 import torchvision.utils
 
 # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 import torch
 import torch.nn as nn
@@ -703,10 +703,10 @@ if __name__ == '__main__':
 
     if args.test:
         #[16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
-        test_model = [23]
+        test_model = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
         for i in test_model:
             print("test"+str(i))
-            net.load_state_dict(torch.load('YOUR PATH'))
+            net.load_state_dict(torch.load(f'{save_path}/model_{i}.pth'))
             test1(net, args, save_path, 0., epoch = str(i))
             test2(net, args, save_path, 0., epoch = str(i))
         

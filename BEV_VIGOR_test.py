@@ -4,7 +4,7 @@ import os
 import torchvision.utils
 
 # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-os.environ['CUDA_VISIBLE_DEVICES'] = '6'
+os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 
 import torch
 import torch.nn as nn
@@ -363,7 +363,7 @@ def match(mask, rot, tran_x, tran_y, coords0):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batch_size', type=int, default=1, help='batch size')
+    parser.add_argument('--batch_size', type=int, default=8, help='batch size')
     parser.add_argument('--resume', type=int, default=0, help='resume the trained model')
     parser.add_argument('--area', type=str, default='same', help='same or cross')
     
@@ -465,10 +465,10 @@ if __name__ == '__main__':
     ###########################
 
     if args.test:
-        test_model = [27]
+        test_model = [10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,39]
         for i in test_model:
             print("test"+str(i))
-            net.load_state_dict(torch.load('YOUR PATH'))
+            net.load_state_dict(torch.load(f'{save_path}/model_{i}.pth'))
             test1(net, args, save_path, 0., epoch = str(i))
 
 

@@ -5,7 +5,7 @@ import skimage.io as io
 import torchvision.utils
 import cv2
 # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 
 import torch
 import torch.nn as nn
@@ -108,6 +108,9 @@ def train(net, lr, args, save_path):
             os.makedirs(save_path)
     logfile_name = save_path+"/train_log.txt"
     for epoch in range(args.resume, args.epochs):
+        if epoch==25:
+            args.end2end = 1
+            optimizer, scheduler = fetch_optimizer(args, net)
         net.train()
 
         # base_lr = 0
@@ -324,7 +327,7 @@ def parse_args():
 
     parser.add_argument('--metric_distance', type=float, default=5., help='meters')
 
-    parser.add_argument('--batch_size', type=int, default=5, help='batch size')
+    parser.add_argument('--batch_size', type=int, default=16, help='batch size')
     parser.add_argument('--loss_method', type=int, default=0, help='0, 1, 2, 3')
 
     parser.add_argument('--level', type=int, default=-1, help='2, 3, 4, -1, -2, -3, -4')

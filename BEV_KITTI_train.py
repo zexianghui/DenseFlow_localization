@@ -1,11 +1,12 @@
 
 import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+
 import matplotlib.pyplot as plt
 import skimage.io as io
 import torchvision.utils
 import cv2
 # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 import torch
 import torch.nn as nn
@@ -108,8 +109,9 @@ def train(net, lr, args, save_path):
             os.makedirs(save_path)
     logfile_name = save_path+"/train_log.txt"
     for epoch in range(args.resume, args.epochs):
-        if epoch>16:
+        if epoch==16:
             args.end2end = 1
+            optimizer, scheduler = fetch_optimizer(args, net)
         net.train()
 
         # base_lr = 0
@@ -223,46 +225,6 @@ def train(net, lr, args, save_path):
             # loss_vec.append(loss)
             loss_vec_10.append(loss)
 
-            # 
-            # save_img(sat_map_gt[0], 'result_visualize/sat_ori.jpg')
-            # save_img(sat_map[0], 'result_visualize/sat_noise.jpg')
-            # coords0_gt = coords0[0].permute(1,2,0)
-            # coords1_gt = (coords0[0]+flow_gt[0]).permute(1,2,0)
-            # match_x = []
-            # match_y = []
-            # x = [256, 256+512-vis_u.data.float().cpu()]
-            # y = [256, 256+vis_v.data.float().cpu()]
-            # match_x.append(x)
-            # match_y.append(y)
-            # for h in range(coords0_gt.size()[0]):
-            #     for w in range(coords1_gt.size()[1]):
-            #         if ((h == 270 and w == 340) or \
-            #             (random.randint(0,8000) == 1)) and mask[0,0,h,w]:
-            #             x = [coords0_gt[h][w][0].data.float().cpu(), coords1_gt[h][w][0].data.float().cpu() + coords1_gt.size()[1]]
-            #             y = [coords0_gt[h][w][1].data.float().cpu(), coords1_gt[h][w][1].data.float().cpu()]
-            #             match_x.append(x)
-            #             match_y.append(y)
-            #             del  x,y
-            # line_point('result_visualize/sat_ori.jpg', 'result_visualize/sat_noise.jpg', match_x, match_y, 'line_gt.jpg')
-            # coords0_gt = coords0[0].permute(1,2,0)
-            # coords1_gt = (coords0[0]+flow_predictions[-1][0]).permute(1,2,0)
-            # match_x = []
-            # match_y = []
-            # x = [256, 256+512-vis_u.data.float().cpu()]
-            # y = [256, 256+vis_v.data.float().cpu()]
-            # match_x.append(x)
-            # match_y.append(y)
-            # for h in range(coords0_gt.size()[0]):
-            #     for w in range(coords1_gt.size()[1]):
-            #         if ((h == 270 and w == 340) or \
-            #             (random.randint(0,8000) == 1)) and mask[0,0,h,w]:
-            #             x = [coords0_gt[h][w][0].data.float().cpu(), coords1_gt[h][w][0].data.float().cpu() + coords1_gt.size()[1]]
-            #             y = [coords0_gt[h][w][1].data.float().cpu(), coords1_gt[h][w][1].data.float().cpu()]
-            #             match_x.append(x)
-            #             match_y.append(y)
-            #             del  x,y
-            # line_point('result_visualize/sat_ori.jpg', 'result_visualize/sat_noise.jpg', match_x, match_y, 'line_net.jpg')
-
             print(epoch,'    ',Loop,'    ',loss)
             if Loop%10 == 0:
                 print(epoch,'    ',Loop,'    ',\
@@ -318,7 +280,7 @@ def parse_args():
 
     parser.add_argument('--metric_distance', type=float, default=5., help='meters')
 
-    parser.add_argument('--batch_size', type=int, default=6, help='batch size')
+    parser.add_argument('--batch_size', type=int, default=16, help='batch size')
     parser.add_argument('--loss_method', type=int, default=0, help='0, 1, 2, 3')
 
     parser.add_argument('--level', type=int, default=-1, help='2, 3, 4, -1, -2, -3, -4')
